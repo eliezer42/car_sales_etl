@@ -1,0 +1,13 @@
+{
+    "Purchase Date":"purchase_date",
+    "Make":"manufacturer",
+    "Model":"model_name",
+    "Color":"color",
+    "New Car":"is_new_car",
+    "Top Speed":"top_speed",
+    "Buyer Gender":"buyer_gender",
+    "Country":"country",
+    "City":"city",
+    "Sale Price":"sale_price",
+    "Discount":"discount"
+}

@@ -1,29 +1,15 @@
 import os
 from sqlalchemy import create_engine, text
 import pandas as pd
+import extract
+import json
 
 base_path = os.path.abspath(__file__ + "/../../")
 source_path = os.path.join(base_path,'data','input','car_sales.csv')
 
 # Column name mapping
-cols = {'Purchase Date':'purchase_date',
-        'Make':'manufacturer',
-        'Model':'model',
-        'Color':'color',
-        'New Car':'is_new_car',
-        'Top Speed':'top_speed',
-        'Buyer Gender':'buyer_gender',
-        'Country':'country',
-        'City':'city',
-        'Sale Price':'sale_price',
-        'Discount':'discount'}
-
-
-def extract(path_to_file:str) -> pd.DataFrame:
-    # Reads the csv file and extracts a subsets of the columns
-    raw_df = pd.read_csv(path_to_file, encoding='utf-8', usecols=cols.keys())
-    return raw_df
-    
+with open('column_mapping.json') as f:
+    cols = json.load(f)
 
 def transform(raw_df:pd.DataFrame) -> pd.DataFrame:
     #Gets rid of missing values
@@ -48,13 +34,9 @@ def load(processed_df:pd.DataFrame) -> int:
         print(r.fetchone())    
     return inserted_rows
 
-def car_sales_etl(path_to_file:str) -> int:
+if __name__ == '__main__':
     uploaded_rows = 0
-    car_sales_raw = extract(path_to_file)
+    car_sales_raw = extract.main()
     car_sales_processed = transform(car_sales_raw)
     uploaded_rows = load(car_sales_processed)
-    return uploaded_rows
-
-if __name__ == '__main__':
-    parsed_rows = car_sales_etl(source_path)
-    print(f"{parsed_rows} were parsed from {source_path} and inserted into database.")
+    print(f"{uploaded_rows} were parsed from {source_path} and inserted into database.")
