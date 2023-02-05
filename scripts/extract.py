@@ -25,7 +25,7 @@ def download_file(url:str) -> str:
     return local_filename
 
 def main() -> pd.DataFrame:
-    # Reads the csv file and extracts a subsets of the columns
+    # Reads the csv file and extracts a subset of the columns
     source_file = download_file(source_url)
     raw_df = pd.read_csv(source_file, encoding='utf-8', usecols=cols.keys())
     return raw_df
