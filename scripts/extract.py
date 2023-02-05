@@ -2,19 +2,20 @@ import pandas as pd
 import json
 import os
 import requests
+from abc import ABC, abstractmethod
 
 # External website file url
-source_url = "https://em-datatsets.s3.amazonaws.com/car_sales.csv"
+# source_url = "https://em-datatsets.s3.amazonaws.com/car_sales.csv"
 
 # Local source directory
 base_path = os.path.abspath(__file__ + "/../../")
 
-def create_folder_if_not_exists(path:str) -> None:
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-
 # Extract column mapping
 with open('column_mapping.json') as f:
     cols = json.load(f)
+
+def create_folder_if_not_exists(path:str) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
 
 # Downloads a file from a publicly available url
 def download_file(url:str) -> str:
@@ -28,8 +29,13 @@ def download_file(url:str) -> str:
                 f.write(chunk)
     return local_filename
 
-def main(chunksize:int) -> pd.DataFrame:
+def main(source:str, source_type:str, online:bool, chunksize:int=None):
     # Reads the csv file and extracts a subset of the columns
-    source_file = download_file(source_url)
-    raw_df = pd.read_csv(source_file, encoding='utf-8', usecols=cols.keys(), chunksize=chunksize, on_bad_lines='skip')
+    source_file = download_file(source) if online else source
+    if source_type == 'excel':
+        raw_df = pd.read_excel(source_file, usecols=cols.keys())
+    elif source_type == 'csv':
+        raw_df = pd.read_csv(source_file, encoding='utf-8', usecols=cols.keys(), chunksize=chunksize, on_bad_lines='skip')
+    else:
+        raise ValueError("Unsupported data source type")
     return raw_df
