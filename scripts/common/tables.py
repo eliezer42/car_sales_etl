@@ -26,3 +26,5 @@ class CarSale(Base):
     final_price = Column(Float)
 
     model = relationship("CarModel", foreign_keys=[model_id])
+
+Base.metadata.create_all(engine)
