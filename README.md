@@ -24,6 +24,8 @@ python ./scripts/etl.py --source https://em-datatsets.s3.amazonaws.com/car_sales
 ```
 Depending on your operating system you may need to use `python3` instead of `python`.
 
+When running the ETL, all logs are stored in a file called `etl.log` located in the root folder og the project.
+
 Assuming you have the project folder in your local disk and a postgresql server was properly set up either in your localhost or in a remote host, go to the root of the project and open a terminal in that location.
 
 Set the following environment variables as shown.
