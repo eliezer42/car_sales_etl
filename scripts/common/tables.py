@@ -1,5 +1,5 @@
 from common.base import Base, engine
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Date, text
 from sqlalchemy.orm import relationship
 
 class CarModel(Base):

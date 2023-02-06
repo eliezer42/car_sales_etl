@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import os
 import requests
-from abc import ABC, abstractmethod
+import logging
 
 # External website file url
 # source_url = "https://em-datatsets.s3.amazonaws.com/car_sales.csv"
@@ -30,12 +30,22 @@ def download_file(url:str) -> str:
     return local_filename
 
 def main(source:str, source_type:str, online:bool, chunksize:int=None):
-    # Reads the csv file and extracts a subset of the columns
-    source_file = download_file(source) if online else source
-    if source_type == 'excel':
-        raw_df = pd.read_excel(source_file, usecols=cols.keys())
-    elif source_type == 'csv':
-        raw_df = pd.read_csv(source_file, encoding='utf-8', usecols=cols.keys(), chunksize=chunksize, on_bad_lines='skip')
-    else:
-        raise ValueError("Unsupported data source type")
+    logging.info('Starting data extraction', extra={'step': 'Extract'})
+    try:
+        # Reads the csv file and extracts a subset of the columns
+        source_file = download_file(source) if online else source
+
+        if source_type == 'excel':
+            raw_df = pd.read_excel(source_file, usecols=cols.keys())
+        elif source_type == 'csv':
+            raw_df = pd.read_csv(source_file, encoding='utf-8', usecols=cols.keys(), chunksize=chunksize, on_bad_lines='skip')
+        else:
+            raise ValueError("Unsupported data source type")
+            
+        logging.info('Data extraction finished', extra={'step': 'Extract'})
+
+    except Exception as e:
+        logging.error(f'Error: {e}', extra={'step': 'Extract'})
+        raise
+
     return raw_df
